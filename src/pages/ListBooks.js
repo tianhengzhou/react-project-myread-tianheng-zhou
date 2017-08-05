@@ -5,10 +5,15 @@ import React from 'react';
 import { Link } from 'react-router-dom'
 import escaspeRegExp from 'escape-string-regexp';
 import sortBy from 'sort-by';
+import Shelf from "../components/Shelf";
+import { update , getAll } from '../BooksAPI'
+
+
 
 export default class ListBooks extends React.Component {
     state = {
-	    query: ''
+	    query: '',
+        books: []
     };
 	updateQuery = (query) => {
         this.setState({
@@ -20,13 +25,33 @@ export default class ListBooks extends React.Component {
             query: '',
         });
     };
+    componentDidMount(){
+        getAll().then((books) => {
+            this.setState({
+                books: books
+            })
+        })
+    }
+    changeShelf = (book, newShelf) => {
+        const bookID = book.id;
+        update(book, newShelf).then(() => {
+            this.setState({
+                books: this.state.books.map((book) => {
+                    if (book.id === bookID){
+                        book.shelf = newShelf;
+                    }
+                    return book;
+                }),
+            });
+
+        });
+
+    };
     render() {
-        const { books } = this.props;
-        const { query } = this.state;
+        const { query, books } = this.state;
         let showingBooks;
         if (query) {
             const match = new RegExp(escaspeRegExp(query), 'i');
-            console.log(escaspeRegExp(query));
             showingBooks = books.filter((books) => {
                 return match.test(books.title)
             })
@@ -53,39 +78,7 @@ export default class ListBooks extends React.Component {
 
                     </div>
                 </div>
-                <div className="search-books-results">
-                    <ol className="books-grid">
-                        {
-                            showingBooks.map(( book ) => (
-                                <li key={ book.title }>
-                                    <div className="book">
-                                        <div className="book-top">
-                                            <div className="book-cover"
-                                                 style={{ width: 128, height: 193,
-                                                     backgroundImage: `url(${book.imageLinks.thumbnail})`}}/>
-                                            <div className="book-shelf-changer">
-                                                <select>
-                                                    <option value="none" disabled>Move to...</option>
-                                                    <option value="currentlyReading">Currently Reading</option>
-                                                    <option value="wantToRead">Want to Read</option>
-                                                    <option value="read">Read</option>
-                                                    <option value="none">None</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="book-title">{ book.title }</div>
-                                        {
-                                            book.authors.map((author) => (
-                                                <div className="book-authors" key={ author }>{ author }</div>
-                                            ))
-                                        }
-                                    </div>
-                                </li>
-                            ))
-                        }
-
-                    </ol>
-                </div>
+                <Shelf title="Search Result" books={showingBooks} changeShelf={this.changeShelf}/>
             </div>
 		);
 	}
