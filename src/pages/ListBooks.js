@@ -7,10 +7,11 @@ import escaspeRegExp from 'escape-string-regexp';
 import sortBy from 'sort-by';
 import Shelf from "../components/Shelf";
 import { update , getAll } from '../BooksAPI'
+import PropTypes from 'prop-types';
 
 
 
-export default class ListBooks extends React.Component {
+class ListBooks extends React.Component {
     state = {
 	    query: '',
         books: []
@@ -83,3 +84,9 @@ export default class ListBooks extends React.Component {
 		);
 	}
 }
+
+ListBooks.propTypes = {
+    books: PropTypes.array.isRequired
+};
+
+export default ListBooks

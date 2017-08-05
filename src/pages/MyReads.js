@@ -5,9 +5,10 @@ import React from 'react';
 import { Link } from 'react-router-dom'
 import { update, getAll } from '../BooksAPI'
 import Shelf from "../components/Shelf";
+import PropTypes from 'prop-types';
 
 
-export default class MyReads extends React.Component {
+class MyReads extends React.Component {
     state = {
         books: []
     };
@@ -57,3 +58,9 @@ export default class MyReads extends React.Component {
         )
 	}
 }
+
+MyReads.propTypes = {
+    books: PropTypes.array.isRequired
+};
+
+export default MyReads;
