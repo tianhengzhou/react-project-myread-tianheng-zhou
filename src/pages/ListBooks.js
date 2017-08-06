@@ -3,36 +3,42 @@
  */
 import React from 'react';
 import { Link } from 'react-router-dom'
-import escaspeRegExp from 'escape-string-regexp';
-import sortBy from 'sort-by';
 import Shelf from "../components/Shelf";
-import { update , getAll } from '../BooksAPI'
+import { update , search } from '../BooksAPI'
 import PropTypes from 'prop-types';
 
 
 
 class ListBooks extends React.Component {
     state = {
-	    query: '',
+	    // query: '',
         books: []
     };
 	updateQuery = (query) => {
-        this.setState({
-            query: query.trim(),
-        });
+        if (!query){
+            this.setState({
+                books:[],
+            });
+        }else {
+            search(query, 20).then((books) => {
+                if (books.error){
+                    this.setState({
+                        books: [],
+                    });
+                }else{
+
+                    this.setState({
+                        books: books
+                    })
+                }
+            })
+        }
     };
     clearQuery = () => {
         this.setState({
-            query: '',
+            books: [],
         });
     };
-    componentDidMount(){
-        getAll().then((books) => {
-            this.setState({
-                books: books
-            })
-        })
-    }
     changeShelf = (book, newShelf) => {
         const bookID = book.id;
         update(book, newShelf).then(() => {
@@ -49,17 +55,7 @@ class ListBooks extends React.Component {
 
     };
     render() {
-        const { query, books } = this.state;
-        let showingBooks;
-        if (query) {
-            const match = new RegExp(escaspeRegExp(query), 'i');
-            showingBooks = books.filter((books) => {
-                return match.test(books.title)
-            })
-        } else {
-            showingBooks = books
-        }
-        showingBooks.sort(sortBy('name'));
+        const { books } = this.state;
 		return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -74,12 +70,11 @@ class ListBooks extends React.Component {
                          you don't find a specific author or title. Every search is limited by search terms.
                          */}
                         <input type="text" placeholder="Search by title or author"
-                               value={query}
                                onChange={(event) => this.updateQuery(event.target.value)}/>
 
                     </div>
                 </div>
-                <Shelf title="Search Result" books={showingBooks} changeShelf={this.changeShelf}/>
+                <Shelf title="Search Result" books={books} changeShelf={this.changeShelf}/>
             </div>
 		);
 	}

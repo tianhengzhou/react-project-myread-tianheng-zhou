@@ -1,4 +1,3 @@
-
 const api = "https://reactnd-books-api.udacity.com";
 
 
@@ -10,7 +9,20 @@ const headers = {
   'Accept': 'application/json',
   'Authorization': token
 }
+// Remove duplicate object in the array, such as when you search for react.
+let removeDuplicates = (originalArray, prop) => {
+    let newArray = [];
+    let lookupObject  = {};
 
+    for(let i in originalArray) {
+        lookupObject[originalArray[i][prop]] = originalArray[i];
+    }
+
+    for(let i in lookupObject) {
+        newArray.push(lookupObject[i]);
+    }
+    return newArray;
+}
 export const get = (bookId) =>
   fetch(`${api}/books/${bookId}`, { headers })
     .then(res => res.json())
@@ -40,4 +52,10 @@ export const search = (query, maxResults) =>
     },
     body: JSON.stringify({ query, maxResults })
   }).then(res => res.json())
-    .then(data => data.books)
+    .then(data => {
+        if (data.books.error){
+            return data.books;
+        }else{
+            return removeDuplicates(data.books, 'id')
+        }
+    })
