@@ -22,4 +22,4 @@ $ npm start
 
 ## License 
 
-My Read Shelf is distributed under the MIT license.
+MIT © [Tianheng](http://www.tianhengzhou.com)
