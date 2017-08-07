@@ -1,10 +1,25 @@
-# Tianheng Zhou's React Nanodegree first project -- My Read Shelf.
+# My Read Shelf
 
-## Description
-This is the first project for Udacity React Nanodegree.
-It contains two pages main page and search page and two components shelf and book.
+My Read Shelf is a project for udacity react nanodegree.
 
-## How to run this application
- 1. npm install to install the dependency of the project
- 2. npm start to start the application
- 3. npm test to test the project
+## Installation
+
+Clone the GitHub repository and use NPM to install the js dependencies.
+
+```
+$ https://github.com/tianhengzhou/react-project-myread-tianheng-zhou.git
+$ cd react-project-myread-tianheng-zhou
+$ npm install
+```
+
+## Usage
+
+Use npm start to start the project.
+```
+$ npm start
+
+```
+
+## License 
+
+My Read Shelf is distributed under the MIT license.
